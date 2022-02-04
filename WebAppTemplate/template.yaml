@@ -1,12 +1,12 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: python-template
-  title: Python Template
-  description: Create a python application
+  name: web-app-template
+  title: Web App Template
+  description: Create a web application
   tags:
-    - recommended
-    - python
+    - C#
+    - NET6.0
 spec:
   owner: web@example.com
   type: application
@@ -14,6 +14,7 @@ spec:
     - title: Provide some simple information
       required:
         - component_id
+        - description
         - owner
       properties:
         component_id:
@@ -43,15 +44,12 @@ spec:
           ui:options:
             allowedHosts:
               - dev.azure.com
-              - github.com
   steps:
     - id: template
       name: Fetch Skeleton + Template
       action: fetch:template
       input:
         url: ./skeleton
-        copyWithoutRender:
-          - pipelines/*
         values:
           component_id: ${{ parameters.component_id }}
           description: ${{ parameters.description }}
@@ -60,11 +58,11 @@ spec:
 
     - id: publish
       name: Publish
-      action: publish:github
+      action: publish:azure
       input:
-        allowedHosts: ["github.com"]
         description: This is ${{ parameters.component_id }}
         repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
 
     - id: register
       name: Register
